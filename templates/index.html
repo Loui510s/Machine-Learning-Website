@@ -3,15 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digit Recognition</title>
+    <title>Image Prediction</title>
 </head>
 <body>
-    <h1>Welcome to the Digit Recognition App!</h1>
-    <p>Upload an image of a handwritten digit to get a prediction.</p>
-    <form action="/predict" method="POST" enctype="multipart/form-data">
-        <label for="image">Choose an image:</label>
-        <input type="file" name="image" accept="image/*">
+    <h1>Upload an Image for Prediction</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
         <button type="submit">Predict</button>
     </form>
+    <h2>Previous Predictions</h2>
+    <ul id="predictions-list"></ul>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const formData = new FormData(this);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert(`Prediction: ${data.digit}, Confidence: ${JSON.stringify(data.confidence)}`);
+                    // Optionally, you can add the new prediction to the list
+                    const predictionsList = document.getElementById('predictions-list');
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Image: ${formData.get('image').name}, Prediction: ${data.digit}`;
+                    predictionsList.appendChild(listItem);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        fetch('/predictions')
+            .then(response => response.json())
+            .then(data => {
+                const predictionsList = document.getElementById('predictions-list');
+                data.forEach(prediction => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Image: ${prediction.image_path}, Prediction: ${prediction.prediction}`;
+                    predictionsList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error loading predictions:', error));
+    </script>
 </body>
 </html>
