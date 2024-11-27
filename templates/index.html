@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Prediction</title>
+    <style>
+        #predictions-list {
+            display: flex;
+            flex-wrap: wrap;
+            list-style-type: none;
+            padding: 0;
+        }
+        #predictions-list li {
+            margin: 10px;
+            text-align: center;
+        }
+        #predictions-list img {
+            display: block;
+            margin: 0 auto;
+            cursor: pointer; /* Add cursor pointer to indicate clickable images */
+        }
+    </style>
 </head>
 <body>
     <h1>Upload an Image for Prediction</h1>
@@ -39,6 +56,9 @@
                     img.src = URL.createObjectURL(formData.get('image'));
                     img.width = 100; // Set the width of the image
                     img.height = 100; // Set the height of the image
+                    img.addEventListener('click', () => {
+                        alert(`Prediction: ${data.digit}, Confidence: ${JSON.stringify(data.confidence)}`);
+                    });
                     listItem.appendChild(img);
 
                     // Add the prediction text
@@ -64,6 +84,9 @@
                     img.src = prediction.image_path;
                     img.width = 100; // Set the width of the image
                     img.height = 100; // Set the height of the image
+                    img.addEventListener('click', () => {
+                        alert(`Prediction: ${prediction.prediction}`);
+                    });
                     listItem.appendChild(img);
 
                     // Add the prediction text
