@@ -32,7 +32,19 @@
                     // Optionally, you can add the new prediction to the list
                     const predictionsList = document.getElementById('predictions-list');
                     const listItem = document.createElement('li');
-                    listItem.textContent = `Image: ${formData.get('image').name}, Prediction: ${data.digit}`;
+                    
+                    // Create an image element
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(formData.get('image'));
+                    img.width = 100; // Set the width of the image
+                    img.height = 100; // Set the height of the image
+                    listItem.appendChild(img);
+
+                    // Add the prediction text
+                    const text = document.createElement('p');
+                    text.textContent = `Prediction: ${data.digit}`;
+                    listItem.appendChild(text);
+
                     predictionsList.appendChild(listItem);
                 }
             })
@@ -45,7 +57,19 @@
                 const predictionsList = document.getElementById('predictions-list');
                 data.forEach(prediction => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `Image: ${prediction.image_path}, Prediction: ${prediction.prediction}`;
+                    
+                    // Create an image element
+                    const img = document.createElement('img');
+                    img.src = prediction.image_path;
+                    img.width = 100; // Set the width of the image
+                    img.height = 100; // Set the height of the image
+                    listItem.appendChild(img);
+
+                    // Add the prediction text
+                    const text = document.createElement('p');
+                    text.textContent = `Prediction: ${prediction.prediction}`;
+                    listItem.appendChild(text);
+
                     predictionsList.appendChild(listItem);
                 });
             })

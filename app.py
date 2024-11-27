@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, g
+from flask import Flask, request, jsonify, render_template, g, send_from_directory
 import torch
 from model import CNN  # Import your model from model.py
 from PIL import Image
@@ -47,6 +47,11 @@ def home():
 def favicon():
     return '', 204  # No content
 
+# Route to serve images
+@app.route('/images/<filename>')
+def images(filename):
+    return send_from_directory('Images', filename)
+
 # Predict route that handles POST requests
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -89,7 +94,7 @@ def predictions():
     try:
         db = get_db()
         old_predictions = load_old_predictions(db)
-        predictions_data = [{'image_path': image.filename, 'prediction': prediction} for image, prediction in old_predictions]
+        predictions_data = [{'image_path': f'/images/{os.path.basename(image.filename)}', 'prediction': prediction} for image, prediction in old_predictions]
         return jsonify(predictions_data)
     except Exception as e:
         logging.error(f"Error loading predictions: {str(e)}")
